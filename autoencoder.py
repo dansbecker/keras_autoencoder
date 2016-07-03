@@ -16,16 +16,17 @@ def autoencode(data):
     model = Model(input=[x], output=[z, x_reconstruction])
     model.compile(optimizer='Adam',
                   loss = 'mse',
-                  loss_weights = [1, 0]
+                  loss_weights = [0, 1]
                   )
 
     model.fit(x = data,
-              y = {'x_reconstruction': data, 'z': np.zeros([n_obs, encoding_size])},
-              nb_epoch=4)
+              y = {'z': np.zeros([n_obs, encoding_size]),
+                   'x_reconstruction': data},
+              nb_epoch=20)
 
     encoded = model.predict(data)[0]
     return encoded
 
 if __name__ == "__main__":
-    data = np.load('title_features_train.npy')
+    data = np.load('unencoded_data.npy')
     encoded_data = autoencode(data)
